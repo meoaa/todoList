@@ -1,10 +1,58 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Todo list</title>
 </head>
 <body>
-    <h1>hello</h1>
+    <h1>todo list</h1>
+    <div th:if="${#lists.isEmpty(todos)}">
+        <h2>할 일이 존재하지 않습니다.</h2>
+    </div>
+    <div th:if="${!#lists.isEmpty(todos)}">
+        <ul id="todo_list">
+            <li th:each="todo : ${todos}">
+                <span th:text="${todo.title}">할 일</span>
+                <span th:text="${todo.completedText}">완료여부</span>
+                <span th:text="${todo.createdAt}">등록 시간</span>
+            </li>
+        </ul>
+    </div>
+
+    <div>
+        <span>할 일 추가</span><label>
+        <input type="text" name="title" id="title"/>
+        <button id="button" type="button">등록</button>
+    </div>
 </body>
+<script>
+    const todoBtn = document.querySelector("#button");
+    const title = document.querySelector("#title");
+    const ulTag = document.querySelector("#todo_list")
+
+    todoBtn.addEventListener("click",()=>{
+        const payload = { title : title.value };
+        fetch('/api/todo', {
+            method: 'POST',
+            headers: {
+                'Content-Type' : 'application/json',
+                'Accept' : 'application/json'
+            },
+            body: JSON.stringify(payload)
+        })
+        .then(res => {
+            if(!res.ok){
+                throw new Error("HTTP ERROR");
+            }
+            return res.json();
+        })
+        .then(data => {
+        const liTag = document.createElement("li");
+        const spanTag = document.createElement("span");
+        spanTag.innerText = data.title;
+        liTag.appendChild(spanTag);
+        ulTag.appendChild(liTag);
+        })
+    });
+</script>
 </html>

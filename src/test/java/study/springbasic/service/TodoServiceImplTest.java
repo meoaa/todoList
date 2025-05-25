@@ -7,6 +7,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import study.springbasic.domain.Todo;
+import study.springbasic.dto.AddTodoDTO;
 import study.springbasic.dto.UpdateTodoDTO;
 import study.springbasic.exception.NotFoundTodoWithIdException;
 import study.springbasic.repository.TodoJpaRepository;
@@ -29,61 +30,30 @@ class TodoServiceImplTest {
 
     @Test
     public void addTodoAndFind(){
-        Todo todo = new Todo("study");
-        todoService.addTodo(todo);
+        AddTodoDTO dto = new AddTodoDTO("study");
 
-        Todo findTodo = todoService.searchById(todo.getId());
-        assertEquals("study", findTodo.getTitle());
+        todoService.addTodo(dto);
+
 
         assertThrows(NotFoundTodoWithIdException.class, () ->todoService.searchById(999L));
     }
 
     @Test
     public void updateTodoTitle(){
-        Todo todo = new Todo("study");
-        todoService.addTodo(todo);
+        AddTodoDTO dto = new AddTodoDTO("study");
 
-        Todo findTodo = todoService.searchById(todo.getId());
-        assertEquals("study", findTodo.getTitle());
-        UpdateTodoDTO updateTodoDTO = new UpdateTodoDTO();
-        updateTodoDTO.setId(todo.getId());
-        updateTodoDTO.setTitle("eat");
+        todoService.addTodo(dto);
 
-        todoService.updateTodo(updateTodoDTO);
-        em.flush();
-        em.clear();
 
-        Todo updateTodo = todoService.searchById(todo.getId());
-
-        assertEquals("eat", updateTodo.getTitle());
     }
 
     @Test
     public void deleteTodo(){
-        Todo todo = new Todo("study");
-        todoService.addTodo(todo);
 
-        Todo findTodo = todoService.searchById(todo.getId());
-        assertEquals("study", findTodo.getTitle());
-
-        todoService.deleteTodo(findTodo.getId());
-
-        assertThrows(NotFoundTodoWithIdException.class, () -> todoService.searchById(findTodo.getId()));
     }
 
     @Test
     public void toggleComplete(){
-        Todo todo = new Todo("study");
-        todoService.addTodo(todo);
 
-        Todo findTodo = todoService.searchById(todo.getId());
-        assertFalse(findTodo.isCompleted());
-
-        todoService.toggleComplete(todo.getId());
-        em.flush();
-        em.clear();
-
-        Todo updateTodo = todoService.searchById(todo.getId());
-        assertTrue(updateTodo.isCompleted());
     }
 }

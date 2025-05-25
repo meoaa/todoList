@@ -4,6 +4,16 @@ spring:
     username: root
     password: root00!@
     driver-class-name: com.mysql.cj.jdbc.Driver
+  thymeleaf:
+    prefix: file:src/main/resources/templates/
+    suffix: .html
+    cache: false
+
+  devtools:
+    restart:
+      enabled: true
+    livereload:
+      enabled: true
 
   jpa:
     hibernate:

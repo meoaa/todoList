@@ -1,15 +1,18 @@
 package study.springbasic.service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import study.springbasic.domain.Todo;
+import study.springbasic.domain.TodoResponseDTO;
+import study.springbasic.dto.AddTodoDTO;
 import study.springbasic.dto.UpdateTodoDTO;
 import study.springbasic.exception.NotFoundTodoWithIdException;
 import study.springbasic.repository.TodoJpaRepository;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -20,8 +23,9 @@ public class TodoServiceImpl implements TodoService{
 
     @Override
     @Transactional
-    public void addTodo(Todo todo) {
-        repository.save(todo);
+    public TodoResponseDTO addTodo(AddTodoDTO dto) {
+        Todo saved = repository.save(new Todo(dto.getTitle()));
+        return new TodoResponseDTO(saved);
     }
 
     @Override
@@ -35,8 +39,11 @@ public class TodoServiceImpl implements TodoService{
     }
 
     @Override
-    public List<Todo> searchAll() {
-        return repository.findAll();
+    public List<TodoResponseDTO> searchAll() {
+        List<Todo> todos = repository.findAll();
+        return todos.stream()
+                .map(TodoResponseDTO::new)
+                .collect(Collectors.toList());
     }
 
     @Override
