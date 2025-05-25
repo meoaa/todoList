@@ -21,12 +21,12 @@ class TodoJpaRepositoryTest {
 
     @Test
     public void testSaveAndFind(){
-        Todo todo = new Todo("잠자기");
+        Todo todo = new Todo("study");
 
         todoRepository.save(todo);
 
         Optional<Todo> found = todoRepository.findById(todo.getId());
         assertTrue(found.isPresent());
-        assertEquals("잠자기",found.get().getTitle());
+        assertEquals("study",found.get().getTitle());
     }
 }

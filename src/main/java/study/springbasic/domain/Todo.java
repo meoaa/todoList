@@ -23,9 +23,20 @@ public class Todo {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
+
     public Todo(String title) {
         this.title = title;
         this.completed = false;
         this.createdAt = LocalDateTime.now();
+    }
+
+    public void changeTodoTitle(String title){
+        this.title = title;
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public void toggleComplete(){
+        this.completed = !completed;
+        this.updatedAt = LocalDateTime.now();
     }
 }

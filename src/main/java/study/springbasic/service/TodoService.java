@@ -1,6 +1,7 @@
 package study.springbasic.service;
 
 import study.springbasic.domain.Todo;
+import study.springbasic.dto.UpdateTodoDTO;
 
 import java.util.List;
 
@@ -14,7 +15,7 @@ public interface TodoService {
 
     List<Todo> searchAll();
 
-    void updateTodo(long id, String title);
+    void updateTodo(UpdateTodoDTO dto);
 
     void deleteTodo(long id);
 
