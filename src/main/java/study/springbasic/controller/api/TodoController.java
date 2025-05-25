@@ -3,10 +3,8 @@ package study.springbasic.controller.api;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-import study.springbasic.domain.TodoResponseDTO;
+import org.springframework.web.bind.annotation.*;
+import study.springbasic.dto.TodoResponseDTO;
 import study.springbasic.dto.AddTodoDTO;
 import study.springbasic.service.TodoService;
 
@@ -22,5 +20,12 @@ public class TodoController {
         log.info("{}" , dto);
         TodoResponseDTO response = todoService.addTodo(dto);
         return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/api/todo/{id}")
+    public String deleteTodo(@PathVariable int id){
+        log.info("{}", id);
+        todoService.deleteTodo(id);
+        return "ok";
     }
 }

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import study.springbasic.domain.TodoResponseDTO;
+import study.springbasic.dto.TodoResponseDTO;
 import study.springbasic.service.TodoService;
 
 import java.util.List;

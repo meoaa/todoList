@@ -1,11 +1,10 @@
 package study.springbasic.service;
 
 import lombok.AllArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import study.springbasic.domain.Todo;
-import study.springbasic.domain.TodoResponseDTO;
+import study.springbasic.dto.TodoResponseDTO;
 import study.springbasic.dto.AddTodoDTO;
 import study.springbasic.dto.UpdateTodoDTO;
 import study.springbasic.exception.NotFoundTodoWithIdException;

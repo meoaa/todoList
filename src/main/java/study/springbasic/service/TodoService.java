@@ -1,8 +1,7 @@
 package study.springbasic.service;
 
-import org.springframework.http.ResponseEntity;
 import study.springbasic.domain.Todo;
-import study.springbasic.domain.TodoResponseDTO;
+import study.springbasic.dto.TodoResponseDTO;
 import study.springbasic.dto.AddTodoDTO;
 import study.springbasic.dto.UpdateTodoDTO;
 

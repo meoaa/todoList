@@ -1,8 +1,10 @@
-package study.springbasic.domain;
+package study.springbasic.dto;
 
 import lombok.Data;
+import study.springbasic.domain.Todo;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Data
 public class TodoResponseDTO {
@@ -21,5 +23,10 @@ public class TodoResponseDTO {
 
     public String getCompletedText(){
         return this.completed ? "완료" : "미완료";
+    }
+
+    public String getFormattedCreatedAt(){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return createdAt.format(formatter);
     }
 }
