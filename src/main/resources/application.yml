@@ -8,7 +8,10 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update # 또는 create, validate 등
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         format_sql: true
+logging:
+  level:
+    com.p6spy: debug
