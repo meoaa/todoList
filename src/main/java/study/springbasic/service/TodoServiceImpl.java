@@ -55,9 +55,10 @@ public class TodoServiceImpl implements TodoService{
 
     @Override
     @Transactional
-    public void deleteTodo(long id) {
+    public TodoResponseDTO deleteTodo(long id) {
         Todo todo = checkTodoById(id);
         repository.delete(todo);
+        return new TodoResponseDTO(todo);
     }
 
     @Override

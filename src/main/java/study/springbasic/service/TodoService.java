@@ -20,7 +20,7 @@ public interface TodoService {
 
     void updateTodo(UpdateTodoDTO dto);
 
-    void deleteTodo(long id);
+    TodoResponseDTO deleteTodo(long id);
 
     TodoToggleResponseDTO toggleComplete(long id);
 }

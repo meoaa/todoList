@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import study.springbasic.common.ApiResponse;
 import study.springbasic.dto.TodoResponseDTO;
 import study.springbasic.dto.AddTodoDTO;
 import study.springbasic.dto.TodoToggleResponseDTO;
@@ -17,24 +18,25 @@ public class TodoController {
     private final TodoService todoService;
 
     @PostMapping("/api/todo")
-    public ResponseEntity<TodoResponseDTO> createTodo(@RequestBody AddTodoDTO dto){
+    public ResponseEntity<ApiResponse<TodoResponseDTO>> createTodo(@RequestBody AddTodoDTO dto){
         log.info("{}" , dto);
         TodoResponseDTO response = todoService.addTodo(dto);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(new ApiResponse<>(response));
     }
 
     @DeleteMapping("/api/todo/{id}")
-    public String deleteTodo(@PathVariable int id){
+    public ResponseEntity<ApiResponse<TodoResponseDTO>> deleteTodo(@PathVariable int id){
         log.info("{}", id);
-        todoService.deleteTodo(id);
-        return "ok";
+        TodoResponseDTO response = todoService.deleteTodo(id);
+        return ResponseEntity.ok(new ApiResponse<>(response));
     }
 
     @PatchMapping("/api/todo/{id}")
-    public ResponseEntity<TodoToggleResponseDTO> toggleTodo(
+    public ResponseEntity<ApiResponse<TodoToggleResponseDTO>> toggleTodo(
             @PathVariable int id){
         log.info("toggleTodo");
+        TodoToggleResponseDTO response = todoService.toggleComplete(id);
 
-        return ResponseEntity.ok(todoService.toggleComplete(id));
+        return ResponseEntity.ok(new ApiResponse<>(response));
     }
 }

@@ -21,6 +21,7 @@ public class TodoResponseDTO {
         this.title = todo.getTitle();
         this.completed = todo.isCompleted();
         this.createdAt = todo.getCreatedAt();
+        this.updatedAt = todo.getUpdatedAt();
     }
 
     public String getCompletedText(){

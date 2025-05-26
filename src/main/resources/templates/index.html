@@ -4,8 +4,110 @@
     <meta charset="UTF-8">
     <title>Todo list</title>
     <style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 40px auto;
+        max-width: 600px;
+        padding: 0 20px;
+        background-color: #f9f9f9;
+    }
 
+    h1 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 30px;
+    }
+
+    #not_todo h2 {
+        text-align: center;
+        color: #777;
+    }
+
+    ul#todo_list {
+        list-style: none;
+        padding: 0;
+    }
+
+    ul#todo_list li {
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 12px 16px;
+        margin-bottom: 10px;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
+        justify-content: space-between;
+    }
+
+    li span {
+        flex: 1 1 auto;
+        min-width: 80px;
+        color: #444;
+    }
+
+    .completed {
+        font-weight: bold;
+        color: green;
+    }
+
+    .updated_at {
+        font-size: 0.9em;
+        color: #888;
+    }
+
+    button {
+        padding: 6px 12px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        background-color: #007bff;
+        color: white;
+        transition: background-color 0.2s ease-in-out;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+
+    .input-box {
+        margin-top: 30px;
+        padding: 20px;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+    }
+
+    .input-box span {
+        display: block;
+        margin-bottom: 10px;
+        font-weight: bold;
+    }
+
+    .input-group {
+        display: flex;
+        gap: 10px;
+    }
+
+    .input-group input {
+        flex: 1;
+        padding: 8px 12px;
+        font-size: 1em;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    .input-group button {
+        flex-shrink: 0;
+        background-color: #28a745;
+    }
+
+    .input-group button:hover {
+        background-color: #218838;
+    }
     </style>
+
 </head>
 <body>
     <h1>todo list</h1>
@@ -67,8 +169,9 @@
     todoBtn.addEventListener("click", async () =>{
         const payload = { title: title.value};
         try{
-            const data = await postTodo(payload);
-            renderTodoItem(data);
+            const response = await postTodo(payload);
+            console.log(response)
+            renderTodoItem(response.data);
         } catch(error){
             console.error("에러 발생 : ",error);
         }
@@ -105,18 +208,22 @@
 
         const liTag = document.createElement("li");
 
-        liTag.appendChild(createSpan(data.title));
-        liTag.appendChild(createSpan(data.completedText));
-        liTag.appendChild(createSpan(data.formattedCreatedAt));
+        liTag.appendChild(createSpan(data.title,null));
+        liTag.appendChild(createSpan(data.completedText, "completed"));
+        liTag.appendChild(createSpan(data.formattedCreatedAt,null));
         liTag.appendChild(createDeleteButton(data.id));
         liTag.appendChild(createToggleButton(data.id));
+        liTag.appendChild(createSpan(null,"updated_at"));
 
         ulTag.appendChild(liTag);
     }
 
-    function createSpan(text) {
+    function createSpan(text, className) {
         const span = document.createElement("span");
         span.innerText = text;
+        if(className != null){
+            span.className = className;
+        }
         return span;
     }
 
@@ -150,12 +257,14 @@
                 const errorBody = await response.json();
                 throw new Error(errorBody.message || "토글 실패");
             }
-            const data = await response.json();
-            console.log(data);
+            const responseData = await response.json();
+            console.log(responseData);
+            const data = responseData.data;
             const button = event.target;
             const li = event.target.closest("li");
             const completedSpan = li.querySelector(".completed");
             const updatedSpan = li.querySelector(".updated_at");
+
 
             button.innerText = data.toggleButton;
             completedSpan.innerText = data.completedText;
@@ -180,6 +289,8 @@
                     const errorBody = await response.json();
                     throw new Error(errorBody.message || "삭제 실패");
                 }
+                const responseData = await response.json();
+                console.log(responseData);
                 li.remove();
                 if(!ul.hasChildNodes()){
                     const not_todo = document.querySelector("#not_todo");
