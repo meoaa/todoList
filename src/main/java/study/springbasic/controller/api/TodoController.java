@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import study.springbasic.dto.TodoResponseDTO;
 import study.springbasic.dto.AddTodoDTO;
+import study.springbasic.dto.TodoToggleResponseDTO;
 import study.springbasic.service.TodoService;
 
 @RestController
@@ -27,5 +28,13 @@ public class TodoController {
         log.info("{}", id);
         todoService.deleteTodo(id);
         return "ok";
+    }
+
+    @PatchMapping("/api/todo/{id}")
+    public ResponseEntity<TodoToggleResponseDTO> toggleTodo(
+            @PathVariable int id){
+        log.info("toggleTodo");
+
+        return ResponseEntity.ok(todoService.toggleComplete(id));
     }
 }

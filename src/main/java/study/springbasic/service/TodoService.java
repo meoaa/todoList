@@ -3,6 +3,7 @@ package study.springbasic.service;
 import study.springbasic.domain.Todo;
 import study.springbasic.dto.TodoResponseDTO;
 import study.springbasic.dto.AddTodoDTO;
+import study.springbasic.dto.TodoToggleResponseDTO;
 import study.springbasic.dto.UpdateTodoDTO;
 
 import java.util.List;
@@ -21,5 +22,5 @@ public interface TodoService {
 
     void deleteTodo(long id);
 
-    void toggleComplete(long id);
+    TodoToggleResponseDTO toggleComplete(long id);
 }

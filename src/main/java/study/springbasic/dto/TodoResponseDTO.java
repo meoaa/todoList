@@ -13,6 +13,8 @@ public class TodoResponseDTO {
     private String completedText;
     private boolean completed;
     private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+
 
     public TodoResponseDTO(Todo todo) {
         this.id = todo.getId();
@@ -24,9 +26,21 @@ public class TodoResponseDTO {
     public String getCompletedText(){
         return this.completed ? "완료" : "미완료";
     }
+    public String getToggleButton(){
+        return this.completed ? "미완료" : "완료";
+    }
 
     public String getFormattedCreatedAt(){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         return createdAt.format(formatter);
+    }
+
+    public String getFormattedUpdatedAt(){
+        if(updatedAt != null){
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            return updatedAt.format(formatter);
+        }else{
+            return null;
+        }
     }
 }

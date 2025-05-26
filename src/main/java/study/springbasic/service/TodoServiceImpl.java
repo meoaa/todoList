@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import study.springbasic.domain.Todo;
 import study.springbasic.dto.TodoResponseDTO;
 import study.springbasic.dto.AddTodoDTO;
+import study.springbasic.dto.TodoToggleResponseDTO;
 import study.springbasic.dto.UpdateTodoDTO;
 import study.springbasic.exception.NotFoundTodoWithIdException;
 import study.springbasic.repository.TodoJpaRepository;
@@ -61,9 +62,10 @@ public class TodoServiceImpl implements TodoService{
 
     @Override
     @Transactional
-    public void toggleComplete(long id) {
+    public TodoToggleResponseDTO toggleComplete(long id) {
         Todo todo = checkTodoById(id);
         todo.toggleComplete();
+        return new TodoToggleResponseDTO(todo);
     }
 
     private Todo checkTodoById(long id) {

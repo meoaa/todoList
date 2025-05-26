@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Todo list</title>
+    <style>
+
+    </style>
 </head>
 <body>
     <h1>todo list</h1>
@@ -15,21 +18,30 @@
             <ul id="todo_list">
                 <li th:each="todo : ${todos}">
                     <span th:text="${todo.title}">할 일</span>
-                    <span th:text="${todo.completedText}">완료여부</span>
+                    <span th:text="${todo.completedText}" class="completed">완료여부</span>
                     <span th:text="${todo.getFormattedCreatedAt}">등록 시간</span>
                     <button
                         type="button"
                         class="delete-btn"
                         th:attr="data-id=${todo.id}">삭제</button>
+                    <button
+                        type="button"
+                        class="toggle-btn"
+                        th:attr="data-id=${todo.id}"
+                        th:text="${todo.getToggleButton}"
+                    >완료</button>
+                    <span th:text="${todo.getFormattedUpdatedAt}" class="updated_at">완료 시간</span>
                 </li>
             </ul>
         </div>
     </div>
 
-    <div>
-        <span>할 일 추가</span><label>
-        <input type="text" name="title" id="title"/>
-        <button id="button" type="button">등록</button>
+    <div class="input-box">
+        <span>할 일 추가</span>
+        <div class="input-group">
+            <input type="text" name="title" id="title" placeholder="할 일을 입력하세요" />
+            <button id="button" type="button">등록</button>
+        </div>
     </div>
 </body>
 <script>
@@ -37,6 +49,7 @@
     const title = document.querySelector("#title");
     const deleteBtns = document.querySelectorAll(".delete-btn");
     const notTodo = document.querySelector("#not_todo");
+    const toggleButtons = document.querySelectorAll(".toggle-btn");
 
     deleteBtns.forEach(btn => {
         btn.addEventListener("click", function(event){
@@ -44,6 +57,11 @@
         });
     })
 
+    toggleButtons.forEach(btn =>{
+        btn.addEventListener("click", function(event){
+            toggleTodo(event);
+        })
+    })
 
 
     todoBtn.addEventListener("click", async () =>{
@@ -54,6 +72,7 @@
         } catch(error){
             console.error("에러 발생 : ",error);
         }
+        title.value="";
     })
 
     async function postTodo(payload){
@@ -72,8 +91,9 @@
 
     function renderTodoItem(data){
         let ulTag = document.querySelector("#todo_list");
-        notTodo.style.display = "none";
+
         if(!ulTag){
+            notTodo.style.display = "none";
             const listBox = document.querySelector("#list_box");
             const divTag = document.createElement("div");
             ulTag = document.createElement("ul");
@@ -89,6 +109,7 @@
         liTag.appendChild(createSpan(data.completedText));
         liTag.appendChild(createSpan(data.formattedCreatedAt));
         liTag.appendChild(createDeleteButton(data.id));
+        liTag.appendChild(createToggleButton(data.id));
 
         ulTag.appendChild(liTag);
     }
@@ -109,6 +130,40 @@
         return button;
     }
 
+    function createToggleButton(id){
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "toggle-btn";
+        button.dataset.id = id;
+        button.innerText = "완료";
+        button.addEventListener("click", toggleTodo);
+        return button;
+    }
+
+    async function toggleTodo(event){
+        const id = event.target.dataset.id;
+        try{
+            const response = await fetch(`/api/todo/${id}`, {
+                method : "PATCH"
+            })
+            if(!response.ok){
+                const errorBody = await response.json();
+                throw new Error(errorBody.message || "토글 실패");
+            }
+            const data = await response.json();
+            console.log(data);
+            const button = event.target;
+            const li = event.target.closest("li");
+            const completedSpan = li.querySelector(".completed");
+            const updatedSpan = li.querySelector(".updated_at");
+
+            button.innerText = data.toggleButton;
+            completedSpan.innerText = data.completedText;
+            updatedSpan.innerText = data.formattedUpdatedAt;
+        }catch(err){
+            alert(err);
+        }
+    }
 
     async function deleteTodo(event){
         const id = event.target.dataset.id;
