@@ -23,8 +23,6 @@ public class HomeController {
         log.info("mainPage");
         List<TodoResponseDTO> dto = todoService.searchAll();
         model.addAttribute("todos", dto);
-        dto.forEach(elem ->
-                log.info("{}",elem.getUpdatedAt()));
         return "index.html";
     }
 }
