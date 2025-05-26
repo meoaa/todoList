@@ -72,9 +72,8 @@
 
     function renderTodoItem(data){
         let ulTag = document.querySelector("#todo_list");
-
+        notTodo.style.display = "none";
         if(!ulTag){
-            notTodo.style.display = "none";
             const listBox = document.querySelector("#list_box");
             const divTag = document.createElement("div");
             ulTag = document.createElement("ul");
@@ -114,6 +113,7 @@
     async function deleteTodo(event){
         const id = event.target.dataset.id;
         const li = event.target.closest("li");
+        const ul = li.closest("ul");
 
         if(confirm("삭제하시겠습니까?")){
             try{
@@ -126,6 +126,10 @@
                     throw new Error(errorBody.message || "삭제 실패");
                 }
                 li.remove();
+                if(!ul.hasChildNodes()){
+                    const not_todo = document.querySelector("#not_todo");
+                    not_todo.style.display = "block";
+                }
             }catch(err){
                 alert(err);
             }
