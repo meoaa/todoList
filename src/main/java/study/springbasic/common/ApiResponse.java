@@ -1,6 +1,5 @@
 package study.springbasic.common;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data

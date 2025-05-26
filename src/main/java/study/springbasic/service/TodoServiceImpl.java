@@ -7,7 +7,6 @@ import study.springbasic.domain.Todo;
 import study.springbasic.dto.TodoResponseDTO;
 import study.springbasic.dto.AddTodoDTO;
 import study.springbasic.dto.TodoToggleResponseDTO;
-import study.springbasic.dto.UpdateTodoDTO;
 import study.springbasic.exception.NotFoundTodoWithIdException;
 import study.springbasic.repository.TodoJpaRepository;
 
@@ -29,14 +28,15 @@ public class TodoServiceImpl implements TodoService{
     }
 
     @Override
-    public Todo searchById(long id) {
-        return checkTodoById(id);
+    public TodoResponseDTO searchById(long id) {
+        Todo todo = checkTodoById(id);
+        return new TodoResponseDTO(todo);
     }
 
-    @Override
-    public List<Todo> searchByTitle(String search) {
-        return repository.findByTitle(search);
-    }
+//    @Override
+//    public List<Todo> searchByTitle(String search) {
+//        return repository.findByTitle(search);
+//    }
 
     @Override
     public List<TodoResponseDTO> searchAll() {
@@ -46,12 +46,12 @@ public class TodoServiceImpl implements TodoService{
                 .collect(Collectors.toList());
     }
 
-    @Override
-    @Transactional
-    public void updateTodo(UpdateTodoDTO dto) {
-        Todo todo = checkTodoById(dto.getId());
-        todo.changeTodoTitle(dto.getTitle());
-    }
+//    @Override
+//    @Transactional
+//    public void updateTodo(UpdateTodoDTO dto) {
+//        Todo todo = checkTodoById(dto.getId());
+//        todo.changeTodoTitle(dto.getTitle());
+//    }
 
     @Override
     @Transactional
