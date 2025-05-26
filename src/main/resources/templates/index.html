@@ -37,90 +37,99 @@
     const title = document.querySelector("#title");
     const deleteBtns = document.querySelectorAll(".delete-btn");
     const notTodo = document.querySelector("#not_todo");
+
     deleteBtns.forEach(btn => {
         btn.addEventListener("click", function(event){
             deleteTodo(event)
         });
     })
 
-    todoBtn.addEventListener("click",()=>{
-        const payload = { title : title.value };
-        fetch('/api/todo', {
-            method: 'POST',
-            headers: {
+
+
+    todoBtn.addEventListener("click", async () =>{
+        const payload = { title: title.value};
+        try{
+            const data = await postTodo(payload);
+            renderTodoItem(data);
+        } catch(error){
+            console.error("에러 발생 : ",error);
+        }
+    })
+
+    async function postTodo(payload){
+        const response = await fetch("/api/todo",{
+            method : "POST",
+            headers : {
                 'Content-Type' : 'application/json',
                 'Accept' : 'application/json'
             },
             body: JSON.stringify(payload)
-        })
-        .then(res => {
-            if(!res.ok){
-                throw new Error("HTTP ERROR");
-            }
-            return res.json();
-        })
-        .then(data => {
+        });
+        if(!response.ok) throw new Error("HTTP ERROR");
 
-        let ulTag = document.querySelector("#todo_list")
+        return response.json();
+    }
 
-        console.log(data);
+    function renderTodoItem(data){
+        let ulTag = document.querySelector("#todo_list");
 
-        if(ulTag == null){
-
+        if(!ulTag){
             notTodo.style.display = "none";
-
             const listBox = document.querySelector("#list_box");
-            const divTag = document.createElement("div")
-
+            const divTag = document.createElement("div");
             ulTag = document.createElement("ul");
             ulTag.id = "todo_list";
+
             divTag.appendChild(ulTag);
             listBox.appendChild(divTag);
-
         }
 
         const liTag = document.createElement("li");
-        const spanTitleTag = document.createElement("span");
-        const spanCompletedTag = document.createElement("span");
-        const spanDateTag = document.createElement("span");
-        const deleteBtn = document.createElement("button");
-        deleteBtn.type = "button";
-        deleteBtn.dataset.id = data.id;
-        deleteBtn.className = "delete-btn";
-        deleteBtn.innerText = "삭제";
-        deleteBtn.addEventListener("click", function(event){
-            deleteTodo(event)
-        })
 
-        spanTitleTag.innerText = data.title;
-        spanCompletedTag.innerText = data.completedText;
-        spanDateTag.innerText = data.formattedCreatedAt;
+        liTag.appendChild(createSpan(data.title));
+        liTag.appendChild(createSpan(data.completedText));
+        liTag.appendChild(createSpan(data.formattedCreatedAt));
+        liTag.appendChild(createDeleteButton(data.id));
 
-
-        liTag.appendChild(spanTitleTag);
-        liTag.appendChild(spanCompletedTag);
-        liTag.appendChild(spanDateTag);
-        liTag.appendChild(deleteBtn);
         ulTag.appendChild(liTag);
-        })
-    });
+    }
 
-    function deleteTodo(event){
+    function createSpan(text) {
+        const span = document.createElement("span");
+        span.innerText = text;
+        return span;
+    }
+
+    function createDeleteButton(id) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.dataset.id = id;
+        button.className = "delete-btn";
+        button.innerText = "삭제";
+        button.addEventListener("click", deleteTodo); // 그대로 event 넘김
+        return button;
+    }
+
+
+    async function deleteTodo(event){
         const id = event.target.dataset.id;
         const li = event.target.closest("li");
-        if(confirm("삭제하시겠습니까?")){
-            fetch(`/api/todo/${id}`,{
-            method: "DELETE"
-            })
-            .then(res=>{
-            console.log(res);
-            li.remove();
-            if(deleteBtns.length == 0){
-                notTodo.style.display = "block";
-            }
-            })
-        }
 
+        if(confirm("삭제하시겠습니까?")){
+            try{
+                const response = await fetch(`/api/todo/${id}`,{
+                    method : "DELETE"
+                })
+
+                if(!response.ok){
+                    const errorBody = await response.json();
+                    throw new Error(errorBody.message || "삭제 실패");
+                }
+                li.remove();
+            }catch(err){
+                alert(err);
+            }
+        }
     }
 </script>
 </html>
